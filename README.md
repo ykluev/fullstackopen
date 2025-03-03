@@ -1,2 +1,2 @@
 # fullstackopen
-Assignments for fullstackopen course
+Assignments for fullstackopen course!
