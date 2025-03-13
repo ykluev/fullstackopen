@@ -5,11 +5,51 @@ const Person = ({name, number}) => (
   <p>{name} {number}</p>
 )
 
-const Filter = () => {
-  
+const Filter = ({filter, onChange}) => {
+  return (
+    <>
+    filter shown with <input 
+        value={filter}
+        onChange={onChange}
+      />
 
+    </>
+  )
+  
 }
- 
+
+const PersonForm = ({entry, onSubmit}) => {
+  return (
+    <>
+    <form onSubmit={onSubmit}>
+        <div>
+          name: <input 
+            value={entry.name.val}
+            onChange={entry.name.handler}
+          />
+        </div>
+        <div>
+          number: <input 
+            value={entry.number.val}
+            onChange={entry.number.handler}
+          />
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+    </form>
+    </>
+  )
+}
+
+const Persons = ({persons, searchFilter}) => {
+  return (
+      persons
+       .filter((p) => p.name.toLowerCase().includes(searchFilter.toLowerCase()))
+       .map(person => <Person key={person.id} name={person.name} number={person.number}/>)
+  )
+}
+   
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -21,7 +61,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [searchFilter, setNewFilter] = useState('')
 
-
+  
   const addName = (event) => {
     event.preventDefault()
     if (persons.map(p => p.name.toLowerCase()).includes(newName.toLowerCase())) {
@@ -44,7 +84,6 @@ const App = () => {
   }
 
   const handleNumberChange = (event) => {
-    console.log(newNumber);
     setNewNumber(event.target.value)
   }
 
@@ -52,37 +91,20 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
+  const phoneEntry = {
+    name: {val: newName, handler: handleNameChange},
+    number: {val: newNumber, handler: handleNumberChange}
+  }
+
+
   return (
     <div>
       <h2>Phonebook</h2>
-      filter shown with <input 
-        value={searchFilter}
-        onChange={handleFilterChange}
-      />
+      <Filter filter={searchFilter} onChange={handleFilterChange}/>
       <h2>add a new</h2>
-      <form onSubmit={addName}>
-        <div>
-          name: <input 
-            value={newName}
-            onChange={handleNameChange}
-          />
-        </div>
-        <div>
-          number: <input 
-            value={newNumber}
-            onChange={handleNumberChange}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>      
-      {
-       persons
-        .filter((p) => p.name.toLowerCase().includes(searchFilter.toLowerCase()))
-        .map(person => <Person key={person.id} name={person.name} number={person.number}/>)
-      }
+      <PersonForm entry={phoneEntry} onSubmit={addName}/>
+      <h2>Numbers</h2>    
+      <Persons persons={persons} searchFilter={searchFilter}/>  
     </div>
   )
 }
