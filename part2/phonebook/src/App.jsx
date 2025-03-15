@@ -53,12 +53,25 @@ const Persons = ({persons, searchFilter, onDelete}) => {
        .map(person => <Person key={person.id} person={person} onClick={onDelete}/>)
   )
 }
+
+const Notification = ({message, success}) => {
+  if (message) {
+    return (
+      <div className={success ? 'success' : 'error'}>
+        {message}
+      </div>
+    )
+  }
+  return null
+}
    
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchFilter, setNewFilter] = useState('')
+  const [notifMsg, setNotifMsg] = useState("")
+  const [notifState, setNotifState] = useState(true)
 
   console.log("render")
 
@@ -80,6 +93,18 @@ const App = () => {
             setPersons(persons.map(p => p.id === id ? response.data : p ))
             setNewName('')
             setNewNumber('')
+            setNotifMsg(`Updated phone number for ${response.data.name}`)
+            setNotifState(true)
+            setTimeout(() => {
+              setNotifMsg(null)
+            }, 3000)
+          })
+          .catch(error => {
+            setNotifMsg(`Information of ${newName} has already been removed from server`)
+            setNotifState(false)
+            setTimeout(() => {
+              setNotifMsg(null)
+            }, 3000)
           })
       }
       return
@@ -92,8 +117,15 @@ const App = () => {
         setPersons(newPeople)
         setNewName('')
         setNewNumber('')
+        setNotifMsg(`Added ${response.data.name}`)
+        setNotifState(true)
+        setTimeout(() => {
+          setNotifMsg(null)
+        }, 3000)
       })
-    
+      .catch(error =>
+        console.log("Error")
+      )
   }
 
   const deleteName = (person) => {
@@ -135,6 +167,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notifMsg} success={notifState}/>
       <Filter filter={searchFilter} onChange={handleFilterChange}/>
       <h2>add a new</h2>
       <PersonForm entry={phoneEntry} onSubmit={addName}/>
