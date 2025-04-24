@@ -1,8 +1,18 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 // NEED THIS TO PARSE JSON
 app.use(express.json())
+
+
+morgan.token('body', function (req, res) { 
+    if (req.body) {
+        return  JSON.stringify(req.body)
+    }
+})
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 
 let persons = [
