@@ -1,0 +1,27 @@
+GET http://localhost:3001/api/persons/
+
+###
+POST http://localhost:3001/api/persons  HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Yudddddl",
+    "number": "123245456"
+}
+
+
+### missing name
+POST http://localhost:3001/api/persons  HTTP/1.1
+content-type: application/json
+
+{
+    "number": "123245456"
+}
+
+### missing number
+POST http://localhost:3001/api/persons  HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Yudddddl"
+}
